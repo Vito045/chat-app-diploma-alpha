@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat app</title>
+    <link rel="icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.2/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.2/build/css/themes/default.min.css"/>
+</head>
+<body>
+    <div class="overlay hidden">
+            <svg class="centered-form__icon">
+                    <use xlink:href="img/sprite.svg#icon-spinner11"></use>
+                </svg>
+    </div>
+    <div class="form none">
+        <div class="centered-form">
+        <form class="account"> 
+    <input type="radio" id="login" class="none"
+           name="account" checked>
+    <label for="login">Login in</label>
+    <input type="radio" id="signup" class="none"
+           name="account">
+    <label for="signup">Sign up</label>
+</form>
+        <div class="centered-form__box">
+            <div class="login start">
+                <h1>Login in</h1>
+                <form class="loginInForm">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Email" required pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Password" required minlength="7">
+                <button>Join</button>
+            </form> 
+            </div>
+            <div class="signup start none">
+                <h1>Register</h1>
+                 <form class="form registerForm">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Username" required pattern="^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$">
+                <label>Email</label>
+                <input type="email" name="username" placeholder="Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                <label>Password</label>
+                <input type="password" name="username" placeholder="Password" required minlength="7">
+                <button>Register</button>
+            </form>
+            </div>
+        </div>
+
+        
+    </div>
+    </div>
+
+    <div class="app none">
+        
+<div class="chatApp">
+        <div id="sidebar" class="chat__sidebar">
+            <div class="logo"></div>
+                    <form class="friend__search">
+                            <input type="text" placeholder="Username" class="friend__input">
+                            <button class="friend__button">
+                                    <svg class="friend__icon">
+                                            <use xlink:href="img/sprite.svg#icon-search"></use>
+                                        </svg>
+                            </button>
+                        </form>
+            <div class="sidebarBody">
+            <ul class="friends">
+                <li class="friend">
+                    <div class="friend__circle friend__circle--online"></div>
+                    <div class="friend__name">Vitaliy Khomenko</div>
+                </li>
+                <li class="friend">
+                    <div class="friend__circle friend__circle--offline"></div>
+                    <div class="friend__name">Senctum Sanctorum</div>
+                </li>
+            </ul>
+            </div>
+        </div>
+        <div class="chat__main">
+                <div class="main">
+                    <div class="header">
+                         <form class="searchForm">
+                    <input type="text" class="searchInput" placeholder="Message">
+                    <button id="searchButton">Search</button>
+                </form>
+                    <div class="profile">
+                        <div class="profile__image"></div>
+                        <div class="profile__name">Vitaliya</div>
+                    </div>
+                    </div>
+                    <div class="body">
+                        <form class="createChannel">
+                            <input type="text" name="channel" id="channelName" placeholder="Name" minlength="4" required>
+                            <input type="text" name="channel" id="channelDescription" placeholder="Description">
+                            <input type="file" name="channel" accept="image/*" id="channelPicture" required>
+                            <input type="radio" id="channelRadioVisible" name="channel" value="Visible" checked>
+                            <input type="radio" name="channel" value="Invisible">
+                            <button>Submit</button>
+                        </form>
+                        <form class="joinChannel">
+                            <input type="text" name="channel" id="channelNameToFind" placeholder="Name" minlength="4" required>
+                            <button>Submit</button>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <script id="sidebarMainBodyTemplate" type="text/html">
+        <ul class="friends">
+            {{#friends}}
+                <li class="friend">
+                    <div class="friend__circle friend__circle--{{isOnline}}"></div>
+                    <div class="friend__name">{{username}}</div>
+                </li>
+            {{/friends}}
+        </ul>
+    </script>
+
+    <script id="searchUsersTemplate" type="text/html">
+        <ul class="users">
+            <div class="user__exit">
+                    <svg class="user__exit-icon">
+                            <use xlink:href="img/sprite.svg#icon-cross"></use>
+                        </svg>
+            </div>
+            {{#users}}
+                <li class="user">
+                    <div class="user__image">
+                        <img src="data:image/png;base64, {{avatar}}" class="user__imageElement">
+                    </div>
+                    <div class="user__name">{{username}}</div>
+                </li>
+            {{/users}}
+        </ul>
+    </script>
+
+    <script id="searchResultsTemplate" type="text/html">
+        <div class="search">
+            <ul class="search__list">
+            {{#channels}}
+                <li class="search__item">
+                    <div class="search__image">
+                        <img src="data:image/png;base64, {{avatar}}" class="search__imageElement">
+                    </div>
+                    <div class="search__name">{{name}}</div>
+                    <div class="search__description">{{description}}</div>
+                    <div class="search__star">
+                            <svg class="search__star-icon">
+                                    <use xlink:href="img/sprite.svg#icon-star-empty"></use>
+                                </svg>
+                    </div>
+                    <div class="search__users">
+                        {{users.length}} users
+                    </div>
+                </li>
+            {{/channels}}
+            </ul>
+        </div>
+    </script>
+
+    <script id="chatTemplate" type="text/html">
+        <div class="chat">
+                    <div id="messages" class="chat__messages"></div>
+
+                <div class="compose">
+                    <form id="messageForm">
+                        <input name="message" type="text" id="messageInput" placeholder="Message" autocomplete="off" minlength="1" required>
+                        <button id="messageButton">Send</button>
+                    </form>
+                    <!-- <button id="sendLocation">Send location</button> -->
+                </div>
+                </div>
+    </script>
+
+    <script id="favouritesTemplate" type="text/html">
+        {{#favourites}}
+        <ul class="favourites">
+                        <li class="favourite">
+                            <div class="favourite__image">
+                                <img src="data:image/png;base64, {{image}}" class="favourite__imageElement">
+                            </div>
+                            <div class="favourite__name">{{ name }}</div>
+                            <div class="favourite__description">{{ description}}</div>
+                            <div class="favourite__star">
+                                <svg class="favourite__icon">
+                <use xlink:href="img/sprite.svg#icon-star-full"></use>
+            </svg>
+                            </div>
+                        </li>
+                    </ul>
+            {{/favourites}}
+    </script>
+
+    <script id="messageTemplate" type="text/html">
+        <div class="message">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p>{{message}}</p>
+        </div>
+    </script>
+
+    <script id="myMessageTemplate" type="text/html">
+        <div class="myMessage">
+            <p>
+                <span class="message__name">You</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p>{{message}}</p>
+        </div>
+    </script>
+
+    <script id="locationMessageTemplate" type="text/html">
+        <div class="message">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p><a href="{{url}}" target="_blank">My current location</a></p>
+        </div>
+    </script>
+
+    <!-- <script id="sidebarTemplate" type="text/html">
+        <h2 class="room-title">{{room}}</h2>
+        <h3 class="list-title">Users</h3>
+        <ul class="users">
+            {{#users}}
+                <li>{{username}}</li>
+            {{/users}}
+        </ul>
+    </script> -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.2/alertify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/chat.js"></script>
+</body>
+</html>
